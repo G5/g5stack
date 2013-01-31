@@ -4,3 +4,6 @@
 [submodule "build-essential"]
 	path = build-essential
 	url = git://github.com/opscode-cookbooks/build-essential.git
+[submodule "rbenv"]
+	path = rbenv
+	url = git://github.com/RiotGames/rbenv-cookbook.git
