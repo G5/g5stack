@@ -7,3 +7,6 @@
 [submodule "rbenv"]
 	path = rbenv
 	url = git://github.com/RiotGames/rbenv-cookbook.git
+[submodule "postgresql"]
+	path = postgresql
+	url = git://github.com/opscode-cookbooks/postgresql.git
