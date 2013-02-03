@@ -17,7 +17,7 @@ execute "tear down postgres to rebuild it with UTF-8 encoding by default" do
     cp /tmp/pg_hba.conf /etc/postgresql/9.1/main/
     cp /tmp/postgresql.conf /etc/postgresql/9.1/main/
     /etc/init.d/postgresql restart
-    sudo -u postgres psql -c "CREATE USER vagrant CREATEDB"
+    sudo -u postgres psql -c "CREATE USER vagrant CREATEDB SUPERUSER"
   }
 
   not_if { File.exist?("/home/vagrant/.encoding-fixed") }
