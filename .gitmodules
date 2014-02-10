@@ -16,3 +16,6 @@
 [submodule "database"]
 	path = database
 	url = git://github.com/opscode-cookbooks/database.git
+[submodule "apt"]
+	path = apt
+	url = git@github.com:opscode-cookbooks/apt.git
