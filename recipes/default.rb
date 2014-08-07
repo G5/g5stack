@@ -8,5 +8,5 @@ include_recipe 'phantomjs'
 end
 
 execute 'Set default editor' do
-  command "update-alternatives --set editor #{node[:editor][:default]}"
+  command "update-alternatives --set editor #{node['editor']['default']}"
 end
