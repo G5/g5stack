@@ -1,0 +1,23 @@
+---
+driver:
+  name: vagrant
+  box: 'g5stack'
+  box_url: 'http://files.vagrantup.com/precise64.box'
+  forward_agent: true
+  customize:
+    memory: 2048
+
+provisioner:
+  name: chef_solo
+
+platforms:
+  - name: ubuntu-12.04
+
+suites:
+  - name: default
+    run_list:
+      - recipe[g5stack::default]
+    attributes:
+      postgresql:
+        password:
+          postgres: 'password'
