@@ -1,0 +1,10 @@
+name 'g5stack'
+description 'G5 standard base development environment'
+version '0.1.0'
+maintainer 'G5'
+license 'MIT'
+
+depends 'apt'
+depends 'g5-postgresql'
+depends 'g5-rbenv'
+depends 'phantomjs'
