@@ -5,6 +5,7 @@
 .*.sw[a-z]
 *.un~
 pkg/
+.DS_Store
 
 # Berkshelf
 .vagrant
@@ -16,7 +17,9 @@ Gemfile.lock
 bin/*
 .bundle/*
 
+# Test kitchen
 .kitchen/
 .kitchen.local.yml
 
-projects-override.yml
+# Vagrant
+*.box
