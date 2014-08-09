@@ -11,4 +11,9 @@ group :development do
   gem 'foodcritic', '~> 4.0'
   gem 'chefspec', '~> 4.0'
   gem 'guard-rspec', '~> 4.2.7'
+  gem 'vagrant', '1.6.4.dev'
+end
+
+group :plugins do
+  gem 'vagrant-vbguest'
 end
