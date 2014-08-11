@@ -11,7 +11,7 @@ group :development do
   gem 'foodcritic', '~> 4.0'
   gem 'chefspec', '~> 4.0'
   gem 'guard-rspec', '~> 4.2.7'
-  gem 'vagrant', '1.6.4.dev'
+  gem 'vagrant', git: 'git@github.com:mitchellh/vagrant.git', ref: 'a53156e426'
 end
 
 group :plugins do
