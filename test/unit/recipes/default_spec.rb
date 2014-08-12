@@ -23,8 +23,12 @@ describe 'g5stack::default' do
     expect(chef_run).to install_package('git')
   end
 
-  it 'installs the nodejs package' do
-    expect(chef_run).to install_package('nodejs')
+  it 'includes the nodejs recipe' do
+    expect(chef_run).to include_recipe('nodejs::default')
+  end
+
+  it 'installs the ember-cli node package' do
+    expect(chef_run).to install_nodejs_npm('ember-cli')
   end
 
   it 'installs the vim package' do

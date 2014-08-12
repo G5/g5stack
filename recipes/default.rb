@@ -2,8 +2,11 @@ include_recipe 'apt'
 include_recipe 'g5-postgresql'
 include_recipe 'g5-rbenv'
 include_recipe 'phantomjs'
+include_recipe 'nodejs'
 
-[ 'nodejs', 'vim', 'libsqlite3-dev', 'sqlite3'].each do |package_name|
+nodejs_npm 'ember-cli'
+
+[ 'vim', 'libsqlite3-dev', 'sqlite3'].each do |package_name|
   package package_name
 end
 
