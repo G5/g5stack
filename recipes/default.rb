@@ -5,9 +5,6 @@ include_recipe 'phantomjs'
 
 include_recipe 'nodejs'
 
-nodejs_npm 'ember-cli'
-nodejs_npm 'bower'
-
 execute 'Set node_modules directory group permissions' do
   command 'chmod -R 775 /usr/lib/node_modules'
 end
@@ -18,6 +15,13 @@ end
 
 execute 'Set local npm directory ownership' do
   command 'chown -R vagrant:vagrant /home/vagrant/.npm'
+end
+
+nodejs_npm 'ember-cli'
+nodejs_npm 'bower'
+
+execute 'Set bower config directory ownership' do
+  command 'chown -R vagrant:vagrant /home/vagrant/.config'
 end
 
 [ 'vim', 'libsqlite3-dev', 'sqlite3'].each do |package_name|

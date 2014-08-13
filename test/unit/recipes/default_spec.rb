@@ -47,6 +47,10 @@ describe 'g5stack::default' do
     expect(chef_run).to run_execute('chown -R vagrant:vagrant /home/vagrant/.npm')
   end
 
+  it 'changes the ownership of the /home/vagrant/.config directory' do
+    expect(chef_run).to run_execute('chown -R vagrant:vagrant /home/vagrant/.config')
+  end
+
   it 'installs the vim package' do
     expect(chef_run).to install_package('vim')
   end

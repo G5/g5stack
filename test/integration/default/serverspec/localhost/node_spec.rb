@@ -68,4 +68,20 @@ describe 'nodejs' do
       expect(local_npm).to be_grouped_into('vagrant')
     end
   end
+
+  describe '/home/vagrant/.config' do
+    subject(:local_config) { file('/home/vagrant/.config') }
+
+    it 'should be a directory' do
+      expect(local_config).to be_directory
+    end
+
+    it 'should be owned by vagrant' do
+      expect(local_config).to be_owned_by('vagrant')
+    end
+
+    it 'should be grouped into vagrant' do
+      expect(local_config).to be_grouped_into('vagrant')
+    end
+  end
 end
