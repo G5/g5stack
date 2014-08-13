@@ -5,6 +5,7 @@ include_recipe 'phantomjs'
 include_recipe 'nodejs'
 
 nodejs_npm 'ember-cli'
+nodejs_npm 'bower'
 
 [ 'vim', 'libsqlite3-dev', 'sqlite3'].each do |package_name|
   package package_name

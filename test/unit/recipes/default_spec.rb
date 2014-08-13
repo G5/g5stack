@@ -31,6 +31,10 @@ describe 'g5stack::default' do
     expect(chef_run).to install_nodejs_npm('ember-cli')
   end
 
+  it 'installs the bower node package' do
+    expect(chef_run).to install_nodejs_npm('bower')
+  end
+
   it 'installs the vim package' do
     expect(chef_run).to install_package('vim')
   end
