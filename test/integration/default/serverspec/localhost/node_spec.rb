@@ -32,4 +32,40 @@ describe 'nodejs' do
       expect(bower).to return_stdout(/bower <command>/)
     end
   end
+
+  describe '/usr/lib/node_modules' do
+    subject(:node_modules) { file('/usr/lib/node_modules') }
+
+    it 'should be a directory' do
+      expect(node_modules).to be_directory
+    end
+
+    it 'should be owned by nobody' do
+      expect(node_modules).to be_owned_by('nobody')
+    end
+
+    it 'should be grouped into vagrant' do
+      expect(node_modules).to be_grouped_into('vagrant')
+    end
+
+    it 'should be writable by the group' do
+      expect(node_modules).to be_writable.by('group')
+    end
+  end
+
+  describe '/home/vagrant/.npm' do
+    subject(:local_npm) { file('/home/vagrant/.npm') }
+
+    it 'should be a directory' do
+      expect(local_npm).to be_directory
+    end
+
+    it 'should be owned by vagrant' do
+      expect(local_npm).to be_owned_by('vagrant')
+    end
+
+    it 'should be grouped into vagrant' do
+      expect(local_npm).to be_grouped_into('vagrant')
+    end
+  end
 end

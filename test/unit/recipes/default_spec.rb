@@ -35,6 +35,18 @@ describe 'g5stack::default' do
     expect(chef_run).to install_nodejs_npm('bower')
   end
 
+  it 'makes the node_modules directory writable by the group' do
+    expect(chef_run).to run_execute('chmod -R 775 /usr/lib/node_modules')
+  end
+
+  it 'assigns the node_modules directory to the vagrant group' do
+    expect(chef_run).to run_execute('chown -R nobody:vagrant /usr/lib/node_modules')
+  end
+
+  it 'changes the ownership of the /home/vagrant/.npm directory' do
+    expect(chef_run).to run_execute('chown -R vagrant:vagrant /home/vagrant/.npm')
+  end
+
   it 'installs the vim package' do
     expect(chef_run).to install_package('vim')
   end
