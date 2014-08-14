@@ -1,8 +1,8 @@
 # G5 Stack
 
-G5 Stack is a collection of [Chef](http://docs.opscode.com/chef_solo.html)
-cookbooks that are commonly used at G5. It is intended to simplify the process
-of setting up a new development environment via [vagrant](http://vagrantup.com).
+G5 Stack is a [Chef](http://docs.opscode.com/chef_solo.html) cookbook for
+provisioning a new G5 development environment. It is intended to
+be used with [vagrant](http://vagrantup.com).
 
 **G5 Stack is NOT intended for use in production environments.**
 
@@ -12,15 +12,45 @@ of setting up a new development environment via [vagrant](http://vagrantup.com).
 
 ## Requirements
 
-* chef-solo >= 10.14
-* vagrant >= 1.3
+* [Chef](http://www.getchef.com) >= 10
+* [Vagrant](http://www.vagrantup.com) >= 1.5
+* [Ruby](http://www.ruby-lang.org) >= 1.9
 
 ## Installation
 
-Add g5stack to your vagrant project as a git submodule:
+The g5stack cookbook is currently only available via github. You can use
+one of Chef's dependency managers (e.g. berkshelf, librarian-chef).
+Alternatively, you can install the cookbook using git submodules.
+
+### Berkshelf
+
+We recommend using [Berkshelf](http://berkshelf.com) to manage the
+installation.
+
+To initialize Berkshelf in your project, if you haven't done so
+already:
 
 ```console
-$ git submodule add git@github.com:g5search/g5stack.git
+$ cd my-chef-cookbook
+$ gem install berkshelf
+$ berks init
+```
+
+To reference the cookbook in github, simply add the following line to your
+`Berksfile`:
+
+```ruby
+cookbook 'g5stack', git: 'git@github.com:G5/g5stack.git'
+```
+
+### Git submodule
+
+If you do not want to use a dependency management tool to install your
+cookbooks, you can still use g5stack as a
+[git submodule](http://git-scm.com/docs/git-submodule). In your project:
+
+```console
+$ git submodule add git@github.com:g5search/g5stack.git cookbooks/g5stack
 $ git commit -m "Install g5stack"
 ```
 
@@ -33,19 +63,17 @@ $ git submodule update --init --recursive
 
 ## Usage
 
-In order to use the common cookbooks, you must configure the `:chef_solo`
-provisioner in vagrant to add g5stack to the cookbooks path. In your
-`Vagrantfile`:
+### Base box
 
-```ruby
-config.vm.provision :chef_solo do |chef|
-  chef.cookbooks_path = [ 'g5stack', 'cookbooks' ]
-  # The rest of your provisioner config...
-end
-```
+TODO
 
-After that, you can execute any recipe from g5stack in the usual way
-(see Examples for details).
+### Run list
+
+TODO
+
+### Cookbook dependency
+
+TODO
 
 ## Examples
 
