@@ -24,7 +24,7 @@ describe 'g5stack::default' do
   end
 
   it 'includes the nodejs recipe' do
-    expect(chef_run).to include_recipe('g5stack::nodejs')
+    expect(chef_run).to include_recipe('g5-nodejs::default')
   end
 
   it 'installs the vim package' do
