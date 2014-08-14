@@ -33,7 +33,7 @@ describe 'nodejs' do
     end
   end
 
-  describe '/usr/lib/node_modules' do
+  describe 'global node_modules' do
     subject(:node_modules) { file('/usr/lib/node_modules') }
 
     it 'should be a directory' do
@@ -53,35 +53,23 @@ describe 'nodejs' do
     end
   end
 
-  describe '/home/vagrant/.npm' do
-    subject(:local_npm) { file('/home/vagrant/.npm') }
+  describe 'npm cache' do
+    subject(:npm_cache) { file('/home/vagrant/.npm') }
 
     it 'should be a directory' do
-      expect(local_npm).to be_directory
+      expect(npm_cache).to be_directory
     end
 
     it 'should be owned by vagrant' do
-      expect(local_npm).to be_owned_by('vagrant')
+      expect(npm_cache).to be_owned_by('vagrant')
     end
 
     it 'should be grouped into vagrant' do
-      expect(local_npm).to be_grouped_into('vagrant')
-    end
-  end
-
-  describe '/home/vagrant/.config' do
-    subject(:local_config) { file('/home/vagrant/.config') }
-
-    it 'should be a directory' do
-      expect(local_config).to be_directory
+      expect(npm_cache).to be_grouped_into('vagrant')
     end
 
-    it 'should be owned by vagrant' do
-      expect(local_config).to be_owned_by('vagrant')
-    end
-
-    it 'should be grouped into vagrant' do
-      expect(local_config).to be_grouped_into('vagrant')
+    it 'should be empty' do
+      expect(command('ls /home/vagrant/.npm | wc -l')).to return_stdout(/^0$/)
     end
   end
 end
