@@ -15,6 +15,7 @@ be used with [vagrant](http://vagrantup.com).
 * [Chef](http://www.getchef.com) >= 10
 * [Vagrant](http://www.vagrantup.com) >= 1.5
 * [Ruby](http://www.ruby-lang.org) >= 1.9
+* [Virtualbox](https://www.virtualbox.org/) >= 4.0 (if using the base box image)
 
 ## Installation
 
@@ -50,7 +51,7 @@ cookbooks, you can still use g5stack as a
 [git submodule](http://git-scm.com/docs/git-submodule). In your project:
 
 ```console
-$ git submodule add git@github.com:g5search/g5stack.git cookbooks/g5stack
+$ git submodule add git@github.com:g5/g5stack.git cookbooks/g5stack
 $ git commit -m "Install g5stack"
 ```
 
@@ -65,78 +66,141 @@ $ git submodule update --init --recursive
 
 ### Base box
 
-TODO
+The quickest and simplest way to use this cookbook is to configure Vagrant
+to use a [base box](https://docs.vagrantup.com/v2/boxes.html) that has already
+been fully provisioned.
 
-### Run list
+If this is a brand-new project, you can generate an initial Vagrantfile
+with the `vagrant init` command:
 
-TODO
-
-### Cookbook dependency
-
-TODO
-
-## Examples
-
-### Using cookbooks in a run-list
-
-The simplest way to execute recipes from chef cookbooks is to use a
-[run-list](http://docs.opscode.com/essentials_node_object_run_lists.html)
-in your `Vagrantfile`. Any calls to `add_recipe` on the provisioner instance
-will add that recipe to the end of the run-list:
-
-```ruby
-config.vm.provision :chef_solo do |chef|
-  chef.cookbooks_path = [ 'g5stack', 'cookbooks' ]
-  chef.add_recipe('sane_postgresql')
-  chef.add_recipe('vagrant_rbenv')
-end
+```console
+$ mkdir my-new-project
+$ cd my-new-project
+$ vagrant init maeve/g5stack
 ```
 
-### Defining a main cookbook
-
-If you need a greater degree of customization than a run-list can provide,
-you may want to define a main cookbook for your environment, with a default
-recipe that loads every other recipe that you need.
-
-Your `Vagrantfile` would contain:
+Alternatively, you can add the following line to your `Vagrantfile`:
 
 ```ruby
-config.vm.provision :chef_solo do |chef|
-  chef.cookbooks_path = [ 'g5stack', 'cookbooks' ]
-  chef.add_recipe('main')
+Vagrant.configure('2') do |config|
+  config.vm.box = 'maeve/g5stack'
   # ...
 end
 ```
 
-Direct dependencies on g5stack cookbooks are declaried in
-`cookbooks/main/metadata.rb`:
+This base box is Virtualbox image hosted on
+[Vagrantcloud](https://vagrantcloud.com). There is no need to explicitly set
+the `box_url` as long as your version of Vagrant is at least 1.5.
 
-```ruby
-depends 'vagrant_rbenv'
-depends 'phantomjs'
+If you use the base box, you should also install the
+[vagrant-vbguest](https://github.com/dotless-de/vagrant-vbguest) plugin to keep
+the version of the
+[Virtualbox Guest Additions](https://www.virtualbox.org/manual/ch04.html)
+installed on the base box in sync with the local version of Virtualbox:
+
+```console
+$ vagrant plugin install vagrant-vbguest
 ```
 
-Configure attributes in `cookbooks/main/attributes/default.rb`:
+### Run list
+
+If you would like to provision your own box instead of using the base box
+image from Vagrantcloud, simply add the default recipe to a
+[run-list](http://docs.opscode.com/essentials_node_object_run_lists.html)
+in your `Vagrantfile`:
 
 ```ruby
-default[:rbenv][:global_ruby_version] = '2.1.0'
+config.vm.provision :chef_solo do |chef|
+  chef.cookbooks_path = [ 'cookbooks' ]
+  chef.add_recipe('g5stack')
+  chef.json = {
+    postgresql: {
+        password: {postgres: 'password'}
+    }
+  }
+end
 ```
 
-Then you can execute particular recipes and any related logic in
-`cookbooks/main/recipes/default.rb`:
+Note that you must set the value of the `postgresql['password']['postgres']`
+attribute in `chef.json`. For more information, see the
+[g5-postgresql](https://github.com/g5/g5-postgresql#attributes) cookbook.
+
+### Cookbook dependency
+
+If you need to override or otherwise customize any part of the provisioning
+process, you'll probably want to create a separate cookbook defining the setup
+for your specific environment. In this case, you'll want to add g5stack as a
+dependency of your custom cookbook.
+
+Add the following line to your cookbook's `metadata.rb`:
 
 ```ruby
-include_recipe 'vagrant_rbenv'
+depends 'g5stack'
+```
 
-rbenv_ruby node[:rbenv][:global_ruby_version] do
-  global true
+And then somewhere in your cookbook's recipe files:
+
+```ruby
+include_recipe 'g5stack'
+```
+
+## Examples
+
+### Using multiple cookbooks in a run-list
+
+If you want to run additional cookbooks, but do not require any custom
+logic or configuration, you can just add everything you need to the
+run-list in your `Vagrantfile`. Any calls to `add_recipe` on the provisioner
+instance will add that recipe to the end of the run-list. For example:
+
+```ruby
+config.vm.provision :chef_solo do |chef|
+  chef.cookbooks_path = [ 'cookbooks' ]
+  chef.add_recipe('g5stack')
+  chef.add_recipe('another-cookbook::special_recipe')
+end
+```
+
+### Defining an environment cookbook
+
+If you need a greater degree of customization than a run-list can provide,
+you may want to create an
+[environment cookbook](http://blog.vialstudios.com/the-environment-cookbook-pattern),
+with a default recipe that loads every other recipe that you need.
+
+For example, your `Vagrantfile` would contain:
+
+```ruby
+config.vm.provision :chef_solo do |chef|
+  chef.cookbooks_path = [ 'cookbooks' ]
+  chef.add_recipe('my-environment-cookbook')
+  # ...
+end
+```
+
+Declare a dependency on g5stack in `metadata.rb`:
+
+```ruby
+depends 'g5stack'
+```
+
+Define new attributes in `attributes/default.rb`:
+
+```ruby
+default['rbenv']['rake']['version'] = '10.3.2'
+```
+
+Execute particular recipes and any custom logic in `recipes/default.rb`:
+
+```ruby
+include_recipe 'g5stack'
+
+rbenv_gem 'rake' do
+  version node['rbenv']['rake']['version']
+  ruby_version node['rbenv']['ruby_version']
 end
 
-rbenv_gem 'bundler' do
-  ruby_version node[:rbenv][:global_ruby_version]
-end
-
-include_recipe 'phantomjs'
+# And so on...
 ```
 
 For more information about how to write cookbooks, see the
@@ -144,8 +208,8 @@ For more information about how to write cookbooks, see the
 
 ## Authors
 
-* Don Petersen / [@dpetersen](https://github.com/dpetersen)
 * Maeve Revels / [@maeve](https://github.com/maeve)
+* Don Petersen / [@dpetersen](https://github.com/dpetersen)
 
 ## Contributions
 
@@ -158,7 +222,7 @@ For more information about how to write cookbooks, see the
 7. Create a new pull request
 
 If you find bugs, have feature requests or questions, please
-[file an issue](https://github.com/g5search/g5stack/issues).
+[file an issue](https://github.com/g5/g5stack/issues).
 
 ## License
 
