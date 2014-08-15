@@ -51,7 +51,7 @@ cookbooks, you can still use g5stack as a
 [git submodule](http://git-scm.com/docs/git-submodule). In your project:
 
 ```console
-$ git submodule add git@github.com:g5/g5stack.git cookbooks/g5stack
+$ git submodule add git@github.com:G5/g5stack.git cookbooks/g5stack
 $ git commit -m "Install g5stack"
 ```
 
@@ -123,7 +123,7 @@ end
 
 Note that you must set the value of the `postgresql['password']['postgres']`
 attribute in `chef.json`. For more information, see the
-[g5-postgresql](https://github.com/g5/g5-postgresql#attributes) cookbook.
+[g5-postgresql](https://github.com/G5/g5-postgresql#attributes) cookbook.
 
 ### Cookbook dependency
 
@@ -214,7 +214,7 @@ For more information about how to write cookbooks, see the
 ## Contributions
 
 1. Fork it
-2. Get it running (see Installation above)
+2. Set up your [development environment](#development-setup)
 3. Create your feature branch (`git checkout -b my-new-feature`)
 4. Add or update cookbooks as needed.
 5. Commit your changes (`git commit -am 'Add some feature'`)
@@ -222,7 +222,68 @@ For more information about how to write cookbooks, see the
 7. Create a new pull request
 
 If you find bugs, have feature requests or questions, please
-[file an issue](https://github.com/g5/g5stack/issues).
+[file an issue](https://github.com/G5/g5stack/issues).
+
+### Development Setup ###
+
+1. Clone the repository locally:
+
+  ```console
+  $ git clone git@github.com:G5/g5stack.git
+  $ cd g5stack
+  ```
+
+2. Install required gems using [Bundler](http://bundler.io):
+
+  ```console
+  $ bundle install
+  ```
+
+3. Install required cookbooks using [Berkshelf](http://berkshelf.com/):
+
+  ```console
+  $ bundle exec berks install
+  ```
+
+4. Provision an instance for development using [test-kitchen](http://kitchen.ci):
+
+  ```console
+  $ bundle exec kitchen converge
+  ```
+
+  See `bundle exec kitchen help` for more test-kitchen commands.
+
+### Specs ###
+
+The unit tests use [ChefSpec](http://sethvargo.github.io/chefspec/),
+and live in the `test/unit` directory. To execute the entire
+suite:
+
+```console
+$ bundle exec rspec
+```
+
+To run the [foodcritic](http://acrmp.github.io/foodcritic) linting tool:
+
+```console
+$ bundle exec foodcritic .
+```
+
+The integration tests use [ServerSpec](http://serverspec.org), and live
+in the `test/integration/default/serverspec` directory. To execute
+the test suite:
+
+```console
+$ bundle exec kitchen verify
+```
+
+If you would prefer to automatically monitor the filesystem for changes
+to execute tests, [Guard](https://github.com/guard/guard) has been
+configured:
+
+```console
+$ bundle exec guard start
+```
 
 ## License
 
