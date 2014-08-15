@@ -2,7 +2,7 @@
 
 G5 Stack is a [Chef](http://docs.opscode.com/chef_solo.html) cookbook for
 provisioning a new G5 development environment. It is intended to
-be used with [vagrant](http://vagrantup.com).
+be used with [Vagrant](http://vagrantup.com).
 
 **G5 Stack is NOT intended for use in production environments.**
 
@@ -19,9 +19,10 @@ be used with [vagrant](http://vagrantup.com).
 
 ## Installation
 
-The g5stack cookbook is currently only available via github. You can use
-one of Chef's dependency managers (e.g. berkshelf, librarian-chef).
-Alternatively, you can install the cookbook using git submodules.
+The g5stack cookbook is currently only available via
+[Github](https://github.com/G5/g5stack). You can use one of Chef's dependency
+managers (e.g. berkshelf, librarian-chef) to download g5stack. Alternatively,
+you can install the cookbook using git submodules.
 
 ### Berkshelf
 
@@ -70,7 +71,7 @@ The quickest and simplest way to use this cookbook is to configure Vagrant
 to use a [base box](https://docs.vagrantup.com/v2/boxes.html) that has already
 been fully provisioned.
 
-If this is a brand-new project, you can generate an initial Vagrantfile
+If this is a brand-new project, you can generate an initial config file
 with the `vagrant init` command:
 
 ```console
@@ -284,6 +285,52 @@ configured:
 ```console
 $ bundle exec guard start
 ```
+
+### Releasing ###
+
+1. Update the version in the [README](#current-version) and
+   [CHANGELOG](./CHANGELOG.md), following the guidelines of
+   [semantic versioning](http://semver.org).
+
+2. Tag the code with the latest version:
+
+   ```console
+   $ git tag -a v0.1.0 -m "Extracted nodejs to wrapper cookbook"
+   $ git push --tags
+   ```
+
+3. Build a clean image using test-kitchen:
+
+  ```console
+  $ bundle exec kitchen destroy
+  $ bundle exec kitchen converge
+  ```
+
+4. Find the name of the VirtualBox instance you want to package
+   (e.g. "default-ubuntu-1204_default_1407517215070_93000"):
+
+  ```console
+  $ VBoxManage list vms
+  "reputation_default_1391587101" {cfaed7c5-ab73-4306-a776-06fbdad77c8e}
+  "g5-orion-vagrant_default_1398901466904_16526" {815ff90c-966d-473f-a75c-d8c3d5eb26b4}
+  "g5-authentication-vagrant_default_1406238023773_17139" {76beb2f0-117f-4953-b348-db3eb92020d8}
+  "packer-ubuntu-12.04-amd64_1406347781876_30580" {d92aac7b-37be-4a28-91a5-0782d5bef584}
+  "default-ubuntu-1204_default_1407517215070_93000" {aeec5515-67fa-4edf-9d15-d258a2d3d80d}
+  ```
+
+5. Use vagrant to package the base box:
+
+  ```console
+  $ vagrant package --base default-ubuntu-1204_default_1407517215070_93000
+  ```
+
+6. Upload the base box box to [Vagrantcloud](https://vagrantcloud.com/maeve/g5stack/versions)
+   by clicking the "Create New Version" button and following the instructions for
+   uploading a new version with a virtualbox provider.
+
+For more information, see the 
+[Vagrant documentation](http://docs.vagrantup.com/v2/virtualbox/boxes.html) on
+creating a base box for a Virtualbox provider.
 
 ## License
 
