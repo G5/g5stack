@@ -8,7 +8,7 @@ be used with [Vagrant](http://vagrantup.com).
 
 ## Current Version
 
-0.0.1
+0.1.0
 
 ## Requirements
 
@@ -289,8 +289,8 @@ $ bundle exec guard start
 ### Releasing ###
 
 1. Update the version in the [README](#current-version) and
-   [CHANGELOG](./CHANGELOG.md), following the guidelines of
-   [semantic versioning](http://semver.org).
+   [CHANGELOG](./CHANGELOG.md), and [metadata.rb](./metadata.rb), following
+   the guidelines of [semantic versioning](http://semver.org).
 
 2. Tag the code with the latest version:
 
