@@ -45,10 +45,12 @@ To reference the cookbook in github, simply add the following line to your
 cookbook 'g5stack', git: 'git@github.com:G5/g5stack.git'
 ```
 
-And install:
+To use g5stack recipes with vagrant, you should also install the
+[vagrant-berkshelf](https://github.com/berkshelf/vagrant-berkshelf)
+plugin:
 
 ```console
-$ berks install
+$ vagrant plugin install vagrant-berkshelf
 ```
 
 ### Git submodule
@@ -113,8 +115,8 @@ To use your local git credentials inside the vagrant environment,
 add the `g5stack::gitconfig` recipe to the run list in your `Vagrantfile`:
 
 ```ruby
+config.berkshelf.enabled = true
 config.vm.provision :chef_solo do |chef|
-  chef.cookbooks_path = [ 'cookbooks' ]
   chef.add_recipe('g5stack::gitconfig')
   chef.json = {
     git: {
@@ -135,8 +137,8 @@ image from Vagrantcloud, simply add the default recipe to a
 in your `Vagrantfile`:
 
 ```ruby
+config.berkshelf.enabled = true
 config.vm.provision :chef_solo do |chef|
-  chef.cookbooks_path = [ 'cookbooks' ]
   chef.add_recipe('g5stack')
   chef.add_recipe('g5stack::gitconfig')
   chef.json = {
