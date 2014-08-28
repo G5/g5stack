@@ -45,6 +45,12 @@ To reference the cookbook in github, simply add the following line to your
 cookbook 'g5stack', git: 'git@github.com:G5/g5stack.git'
 ```
 
+And install:
+
+```console
+$ berks install
+```
+
 ### Git submodule
 
 If you do not want to use a dependency management tool to install your
@@ -103,6 +109,24 @@ installed on the base box in sync with the local version of Virtualbox:
 $ vagrant plugin install vagrant-vbguest
 ```
 
+To use your local git credentials inside the vagrant environment,
+add the `g5stack::gitconfig` recipe to the run list in your `Vagrantfile`:
+
+```ruby
+config.vm.provision :chef_solo do |chef|
+  chef.cookbooks_path = [ 'cookbooks' ]
+  chef.add_recipe('g5stack::gitconfig')
+  chef.json = {
+    git: {
+      user: {
+        name: `git config user.name`.strip,
+        email: `git config user.email`.strip
+      }
+    }
+  }
+end
+```
+
 ### Run list
 
 If you would like to provision your own box instead of using the base box
@@ -114,9 +138,16 @@ in your `Vagrantfile`:
 config.vm.provision :chef_solo do |chef|
   chef.cookbooks_path = [ 'cookbooks' ]
   chef.add_recipe('g5stack')
+  chef.add_recipe('g5stack::gitconfig')
   chef.json = {
     postgresql: {
-        password: {postgres: 'password'}
+      password: {postgres: 'password'}
+    },
+    git: {
+      user: {
+        name: `git config user.name`.strip,
+        email: `git config user.email`.strip
+      }
     }
   }
 end
@@ -143,6 +174,7 @@ And then somewhere in your cookbook's recipe files:
 
 ```ruby
 include_recipe 'g5stack'
+include_recipe 'g5stack::gitconfig'
 ```
 
 ## Examples
@@ -195,6 +227,7 @@ Execute particular recipes and any custom logic in `recipes/default.rb`:
 
 ```ruby
 include_recipe 'g5stack'
+include_recipe 'g5stack::gitconfig'
 
 rbenv_gem 'rake' do
   version node['rbenv']['rake']['version']

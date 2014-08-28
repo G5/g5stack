@@ -17,7 +17,12 @@ suites:
   - name: default
     run_list:
       - recipe[g5stack::default]
+      - recipe[g5stack::gitconfig]
     attributes:
       postgresql:
         password:
           postgres: 'password'
+      git:
+        user:
+          name: <%= `git config user.name`.strip %>
+          email: <%= `git config user.email`.strip %>
