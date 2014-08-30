@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'nodejs' do
+  let(:pre_command) { 'sudo -iu vagrant' }
+
   describe 'package' do
     subject(:node) { package('nodejs') }
 
@@ -10,7 +12,7 @@ describe 'nodejs' do
   end
 
   describe 'npm' do
-    subject(:npm) { command('npm --help') }
+    subject(:npm) { command("#{pre_command} npm --help") }
 
     it 'should be installed' do
       expect(npm).to return_stdout(/Usage: npm/)
@@ -18,7 +20,7 @@ describe 'nodejs' do
   end
 
   describe 'ember cli' do
-    subject(:ember) { command('ember --help') }
+    subject(:ember) { command("#{pre_command} ember --help") }
 
     it 'should be installed' do
       expect(ember).to return_stdout(/Available commands in ember-cli/)
@@ -26,15 +28,15 @@ describe 'nodejs' do
   end
 
   describe 'bower' do
-    subject(:bower) { command('sudo -u vagrant bower --help --config.interactive=false') }
+    subject(:bower) { command("#{pre_command} bower --help --config.interactive=false") }
 
     it 'should be installed' do
       expect(bower).to return_stdout(/bower <command>/)
     end
   end
 
-  describe 'global node_modules' do
-    subject(:node_modules) { file('/usr/lib/node_modules') }
+  describe 'global prefix dir' do
+    subject(:node_modules) { file('/home/vagrant/.node') }
 
     it 'should be a directory' do
       expect(node_modules).to be_directory

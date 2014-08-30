@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'rbenv' do
-  let(:pre_command) { 'sudo -u vagrant /bin/bash --login' }
+  let(:pre_command) { 'sudo -iu vagrant' }
 
   describe 'executable' do
     subject(:rbenv) { command("#{pre_command} which rbenv") }
@@ -56,7 +56,7 @@ describe 'rbenv' do
   end
 
   describe 'PATH env var' do
-    subject(:path) { command("#{pre_command} -c printenv") }
+    subject(:path) { command("#{pre_command} printenv") }
 
     it 'should favor local project binstubs over rbenv shims' do
       expect(path).to return_stdout(/PATH=bin\:.*\/opt\/rbenv\/shims/)
