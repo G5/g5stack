@@ -1,3 +1,7 @@
+## v0.1.1 (2014-8-30)
+
+* Upgrade g5-nodejs cookbook to pick up changes to npm prefix
+
 ## v0.1.0 (2014-8-18)
 
 * Use bundler for gem dependency management

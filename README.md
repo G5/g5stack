@@ -8,7 +8,7 @@ be used with [Vagrant](http://vagrantup.com).
 
 ## Current Version
 
-0.1.0
+0.1.1
 
 ## Requirements
 
@@ -330,8 +330,9 @@ $ bundle exec guard start
 2. Tag the code with the latest version:
 
    ```console
+   $ git commit -am "Prepare to release v0.1.0"
    $ git tag -a v0.1.0 -m "Extracted nodejs to wrapper cookbook"
-   $ git push --tags
+   $ git push --tags origin master
    ```
 
 3. Build a clean image using test-kitchen:
