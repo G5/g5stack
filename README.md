@@ -20,55 +20,29 @@ be used with [Vagrant](http://vagrantup.com).
 ## Installation
 
 The g5stack cookbook is currently only available via
-[Github](https://github.com/G5/g5stack). You can use one of Chef's dependency
-managers (e.g. berkshelf, librarian-chef) to download g5stack. Alternatively,
-you can install the cookbook using git submodules.
+[Github](https://github.com/G5/g5stack). We recommend using
+[Berkshelf](http://berkshelf.com) to manage the installation.
 
-### Berkshelf
+### New vagrant environment
 
-We recommend using [Berkshelf](http://berkshelf.com) to manage the
-installation.
+1. Copy the [example Berksfile](examples/Berksfile) to your project root.
+2. Install [vagrant-berkshelf](https://github.com/berkshelf/vagrant-berkshelf):
 
-To initialize Berkshelf in your project, if you haven't done so
-already:
+  ```console
+  $ vagrant plugin install vagrant-berkshelf
+  ```
 
-```console
-$ cd my-chef-cookbook
-$ gem install berkshelf
-$ berks init
-```
+### Existing environment cookbook
 
-To reference the cookbook in github, simply add the following line to your
-`Berksfile`:
+In addition to g5stack, there are a number of G5-specific wrapper cookbooks
+that need to be installed as transitive dependencies. Add the following
+lines to your `Berksfile`:
 
 ```ruby
-cookbook 'g5stack', git: 'git@github.com:G5/g5stack.git'
-```
-
-To use g5stack recipes with vagrant, you should also install the
-[vagrant-berkshelf](https://github.com/berkshelf/vagrant-berkshelf)
-plugin:
-
-```console
-$ vagrant plugin install vagrant-berkshelf
-```
-
-### Git submodule
-
-If you do not want to use a dependency management tool to install your
-cookbooks, you can still use g5stack as a
-[git submodule](http://git-scm.com/docs/git-submodule). In your project:
-
-```console
-$ git submodule add git@github.com:G5/g5stack.git cookbooks/g5stack
-$ git commit -m "Install g5stack"
-```
-
-Anyone else who clones your repository will have to initialize the
-submodule contents:
-
-```console
-$ git submodule update --init --recursive
+cookbook 'g5stack', git: 'git@github.com:G5/g5stack.git', branch: 'test_kitchen_with_berkshelf'
+cookbook 'g5-postgresql', git: 'git@github.com:G5/g5-postgresql.git'
+cookbook 'g5-rbenv', git: 'git@github.com:G5/g5-rbenv.git'
+cookbook 'g5-nodejs', git: 'git@github.com:G5/g5-nodejs.git'
 ```
 
 ## Usage
