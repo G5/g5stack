@@ -1,0 +1,28 @@
+---
+driver:
+  name: vagrant
+  box: 'g5stack'
+  box_url: 'http://files.vagrantup.com/precise64.box'
+  forward_agent: true
+  customize:
+    memory: 2048
+
+provisioner:
+  name: chef_solo
+
+platforms:
+  - name: ubuntu-12.04
+
+suites:
+  - name: default
+    run_list:
+      - recipe[g5stack::default]
+      - recipe[g5stack::gitconfig]
+    attributes:
+      postgresql:
+        password:
+          postgres: 'password'
+      git:
+        user:
+          name: <%= `git config user.name`.strip %>
+          email: <%= `git config user.email`.strip %>

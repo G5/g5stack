@@ -1,128 +1,175 @@
 # G5 Stack
 
-G5 Stack is a collection of [Chef](http://docs.opscode.com/chef_solo.html)
-cookbooks that are commonly used at G5. It is intended to simplify the process
-of setting up a new development environment via [vagrant](http://vagrantup.com).
+G5 Stack is a [Chef](http://www.getchef.com) cookbook for
+provisioning a new G5 development environment.
 
 **G5 Stack is NOT intended for use in production environments.**
 
 ## Current Version
 
-0.0.1
+0.1.1
 
 ## Requirements
 
-* chef-solo >= 10.14
-* vagrant >= 1.3
+* [ChefDK](http://downloads.getchef.com/chef-dk)
+* [Vagrant](http://www.vagrantup.com) >= 1.5
+* [Virtualbox](https://www.virtualbox.org/) >= 4.0
+* [Ruby](http://www.ruby-lang.org) >= 1.9
 
 ## Installation
 
-Add g5stack to your vagrant project as a git submodule:
+### Getting started
 
-```console
-$ git submodule add git@github.com:g5search/g5stack.git
-$ git commit -m "Install g5stack"
-```
+1. Copy the example [Berksfile](examples/Berksfile) to your project root.
+2. Copy the example [Vagrantfile](examples/Vagrantfile) to your project root.
+3. Install required vagrant plugins:
 
-Anyone else who clones your repository will have to initialize the
-submodule contents:
+  ```console
+  $ vagrant plugin install vagrant-berkshelf vagrant-vbguest
+  ```
 
-```console
-$ git submodule update --init --recursive
+3. Start up vagrant:
+
+  ```console
+  $ vagrant up
+  $ vagrant ssh
+  ```
+
+4. When you shell in, you'll find your project mounted at `/vagrant`:
+
+  ```console
+  $ vagrant ssh
+  $ cd /vagrant
+  ```
+
+### Cookbook dependency
+
+If you already have an environment cookbook, you can install g5stack
+as a dependency via Berkshelf. There are also a number of G5-specific
+wrapper cookbooks that are transitive dependencies of g5stack. You will
+have to explicitly load these cookbooks as well.
+
+Add the following lines to your existing `Berksfile`:
+
+```ruby
+cookbook 'g5stack', git: 'git@github.com:G5/g5stack.git'
+cookbook 'g5-postgresql', git: 'git@github.com:G5/g5-postgresql.git'
+cookbook 'g5-rbenv', git: 'git@github.com:G5/g5-rbenv.git'
+cookbook 'g5-nodejs', git: 'git@github.com:G5/g5-nodejs.git'
 ```
 
 ## Usage
 
-In order to use the common cookbooks, you must configure the `:chef_solo`
-provisioner in vagrant to add g5stack to the cookbooks path. In your
-`Vagrantfile`:
+### Base box
 
-```ruby
-config.vm.provision :chef_solo do |chef|
-  chef.cookbooks_path = [ 'g5stack', 'cookbooks' ]
-  # The rest of your provisioner config...
-end
+You can save setup time by using a 
+[base box](https://docs.vagrantup.com/v2/boxes.html) that has already
+been fully provisioned.
+
+If this is a brand-new project, you can generate an initial config file
+with the `vagrant init` command:
+
+```console
+$ mkdir my-new-project
+$ cd my-new-project
+$ vagrant init maeve/g5stack
 ```
 
-After that, you can execute any recipe from g5stack in the usual way
-(see Examples for details).
-
-## Examples
-
-### Using cookbooks in a run-list
-
-The simplest way to execute recipes from chef cookbooks is to use a
-[run-list](http://docs.opscode.com/essentials_node_object_run_lists.html)
-in your `Vagrantfile`. Any calls to `add_recipe` on the provisioner instance
-will add that recipe to the end of the run-list:
+Alternatively, you can add the following line to your existing `Vagrantfile`:
 
 ```ruby
-config.vm.provision :chef_solo do |chef|
-  chef.cookbooks_path = [ 'g5stack', 'cookbooks' ]
-  chef.add_recipe('sane_postgresql')
-  chef.add_recipe('vagrant_rbenv')
-end
-```
-
-### Defining a main cookbook
-
-If you need a greater degree of customization than a run-list can provide,
-you may want to define a main cookbook for your environment, with a default
-recipe that loads every other recipe that you need.
-
-Your `Vagrantfile` would contain:
-
-```ruby
-config.vm.provision :chef_solo do |chef|
-  chef.cookbooks_path = [ 'g5stack', 'cookbooks' ]
-  chef.add_recipe('main')
+Vagrant.configure('2') do |config|
+  config.vm.box = 'maeve/g5stack'
   # ...
 end
 ```
 
-Direct dependencies on g5stack cookbooks are declaried in
-`cookbooks/main/metadata.rb`:
+This base box is Virtualbox image hosted on
+[Vagrantcloud](https://vagrantcloud.com). There is no need to explicitly set
+the `box_url` as long as your version of Vagrant is at least 1.5.
+
+### Git config
+
+To use your local git credentials inside the vagrant environment,
+add the `g5stack::gitconfig` recipe to the run list in your `Vagrantfile`:
 
 ```ruby
-depends 'vagrant_rbenv'
-depends 'phantomjs'
-```
-
-Configure attributes in `cookbooks/main/attributes/default.rb`:
-
-```ruby
-default[:rbenv][:global_ruby_version] = '2.1.0'
-```
-
-Then you can execute particular recipes and any related logic in
-`cookbooks/main/recipes/default.rb`:
-
-```ruby
-include_recipe 'vagrant_rbenv'
-
-rbenv_ruby node[:rbenv][:global_ruby_version] do
-  global true
+config.berkshelf.enabled = true
+config.vm.provision :chef_solo do |chef|
+  chef.add_recipe('g5stack::gitconfig')
+  chef.json = {
+    git: {
+      user: {
+        name: `git config user.name`.strip,
+        email: `git config user.email`.strip
+      }
+    }
+  }
 end
-
-rbenv_gem 'bundler' do
-  ruby_version node[:rbenv][:global_ruby_version]
-end
-
-include_recipe 'phantomjs'
 ```
 
-For more information about how to write cookbooks, see the
-[chef documentation](http://docs.opscode.com/essentials_cookbooks.html).
+### Provisioning from scratch
+
+If you would like to provision your own box instead of using the base box
+image from Vagrantcloud, simply add the default recipe to a
+[run-list](http://docs.opscode.com/essentials_node_object_run_lists.html)
+in your `Vagrantfile`:
+
+```ruby
+config.berkshelf.enabled = true
+config.vm.provision :chef_solo do |chef|
+  chef.add_recipe('g5stack')
+  chef.add_recipe('g5stack::gitconfig')
+  chef.json = {
+    postgresql: {
+      password: {postgres: 'password'}
+    },
+    git: {
+      user: {
+        name: `git config user.name`.strip,
+        email: `git config user.email`.strip
+      }
+    }
+  }
+end
+```
+
+Note that you must set the value of the `postgresql['password']['postgres']`
+attribute in `chef.json`. For more information, see the
+[g5-postgresql](https://github.com/G5/g5-postgresql#attributes) cookbook.
+
+### Environment cookbook
+
+If you need to override or otherwise customize any part of the provisioning
+process, you'll probably want to create an 
+[environment cookbook](http://blog.vialstudios.com/the-environment-cookbook-pattern)
+that depends on g5stack.
+
+Add the following line to your cookbook's `metadata.rb`:
+
+```ruby
+depends 'g5stack'
+```
+
+And then somewhere in your cookbook's recipe files:
+
+```ruby
+include_recipe 'g5stack'
+include_recipe 'g5stack::gitconfig'
+```
+
+Make sure you've followed the [instructions](#cookbook-dependency)
+for installing g5stack and g5 wrapper cookbooks from github via berkshelf.
 
 ## Authors
 
-* Don Petersen / [@dpetersen](https://github.com/dpetersen)
 * Maeve Revels / [@maeve](https://github.com/maeve)
+* Don Petersen / [@dpetersen](https://github.com/dpetersen)
 
 ## Contributions
 
 1. Fork it
-2. Get it running (see Installation above)
+2. Set up your [development environment](#development-setup)
 3. Create your feature branch (`git checkout -b my-new-feature`)
 4. Add or update cookbooks as needed.
 5. Commit your changes (`git commit -am 'Add some feature'`)
@@ -130,7 +177,115 @@ For more information about how to write cookbooks, see the
 7. Create a new pull request
 
 If you find bugs, have feature requests or questions, please
-[file an issue](https://github.com/g5search/g5stack/issues).
+[file an issue](https://github.com/G5/g5stack/issues).
+
+### Development Setup ###
+
+1. Clone the repository locally:
+
+  ```console
+  $ git clone git@github.com:G5/g5stack.git
+  $ cd g5stack
+  ```
+
+2. Install required gems using [Bundler](http://bundler.io):
+
+  ```console
+  $ bundle install
+  ```
+
+3. Install required cookbooks using [Berkshelf](http://berkshelf.com/):
+
+  ```console
+  $ bundle exec berks install
+  ```
+
+4. Provision an instance for development using [test-kitchen](http://kitchen.ci):
+
+  ```console
+  $ bundle exec kitchen converge
+  ```
+
+  See `bundle exec kitchen help` for more test-kitchen commands.
+
+### Specs ###
+
+The unit tests use [ChefSpec](http://sethvargo.github.io/chefspec/),
+and live in the `test/unit` directory. To execute the entire
+suite:
+
+```console
+$ bundle exec rspec
+```
+
+To run the [foodcritic](http://acrmp.github.io/foodcritic) linting tool:
+
+```console
+$ bundle exec foodcritic .
+```
+
+The integration tests use [ServerSpec](http://serverspec.org), and live
+in the `test/integration/default/serverspec` directory. To execute
+the test suite:
+
+```console
+$ bundle exec kitchen verify
+```
+
+If you would prefer to automatically monitor the filesystem for changes
+to execute tests, [Guard](https://github.com/guard/guard) has been
+configured:
+
+```console
+$ bundle exec guard start
+```
+
+### Releasing ###
+
+1. Update the version in the [README](#current-version) and
+   [CHANGELOG](./CHANGELOG.md), and [metadata.rb](./metadata.rb), following
+   the guidelines of [semantic versioning](http://semver.org).
+
+2. Tag the code with the latest version:
+
+   ```console
+   $ git commit -am "Prepare to release v0.1.0"
+   $ git tag -a v0.1.0 -m "Extracted nodejs to wrapper cookbook"
+   $ git push --tags origin master
+   ```
+
+3. Build a clean image using test-kitchen:
+
+  ```console
+  $ bundle exec kitchen destroy
+  $ bundle exec kitchen converge
+  ```
+
+4. Find the name of the VirtualBox instance you want to package
+   (e.g. "default-ubuntu-1204_default_1407517215070_93000"):
+
+  ```console
+  $ VBoxManage list vms
+  "reputation_default_1391587101" {cfaed7c5-ab73-4306-a776-06fbdad77c8e}
+  "g5-orion-vagrant_default_1398901466904_16526" {815ff90c-966d-473f-a75c-d8c3d5eb26b4}
+  "g5-authentication-vagrant_default_1406238023773_17139" {76beb2f0-117f-4953-b348-db3eb92020d8}
+  "packer-ubuntu-12.04-amd64_1406347781876_30580" {d92aac7b-37be-4a28-91a5-0782d5bef584}
+  "default-ubuntu-1204_default_1407517215070_93000" {aeec5515-67fa-4edf-9d15-d258a2d3d80d}
+  ```
+
+5. Use vagrant to package the base box:
+
+  ```console
+  $ vagrant package --base default-ubuntu-1204_default_1407517215070_93000
+  ```
+
+6. Upload the base box box to [Vagrantcloud](https://vagrantcloud.com/maeve/g5stack/versions)
+   by clicking the "Create New Version" button and following the instructions for
+   uploading a new version with a virtualbox provider.
+
+For more information, see the 
+[Vagrant documentation](http://docs.vagrantup.com/v2/virtualbox/boxes.html) on
+creating a base box for a Virtualbox provider.
 
 ## License
 
