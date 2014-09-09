@@ -12,7 +12,7 @@ provisioning a new G5 development environment.
 ## Requirements
 
 * [ChefDK](http://downloads.getchef.com/chef-dk)
-* [Vagrant](http://www.vagrantup.com) >= 1.5
+* [Vagrant](http://www.vagrantup.com) >= 1.6.5
 * [Virtualbox](https://www.virtualbox.org/) >= 4.0
 * [Ruby](http://www.ruby-lang.org) >= 1.9
 
