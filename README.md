@@ -28,18 +28,22 @@ provisioning a new G5 development environment.
   $ vagrant plugin install vagrant-berkshelf vagrant-vbguest
   ```
 
-3. Start up vagrant:
+3. Start up vagrant and log in:
 
   ```console
   $ vagrant up
   $ vagrant ssh
   ```
 
-4. When you shell in, you'll find your project mounted at `/vagrant`:
+4. Inside the VM, you'll find your project mounted at `/my-project`, where
+   `my-project` is the basename of the directory where the Vagrantfile resides
+   on the host machine. For example, on the host machine:
 
   ```console
+  $ cd ~/projects/my-project
+  $ vagrant up
   $ vagrant ssh
-  $ cd /vagrant
+  $ cd /my-project
   ```
 
 ### Cookbook dependency
