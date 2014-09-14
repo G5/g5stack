@@ -35,6 +35,14 @@ describe 'nodejs' do
     end
   end
 
+  describe 'grunt-cli' do
+    subject(:grunt_cli) { command("#{pre_command} grunt -v") }
+
+    it 'should be installed globally' do
+      expect(grunt_cli).to return_stdout(/grunt-cli: The grunt command line interface/)
+    end
+  end
+
   describe 'global prefix dir' do
     subject(:node_modules) { file('/home/vagrant/.node') }
 
