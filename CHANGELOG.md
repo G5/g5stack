@@ -1,3 +1,7 @@
+## v0.1.2 (2014-9-14)
+
+* Upgrade g5-nodejs cookbook to pick up changes for grunt-cli
+
 ## v0.1.1 (2014-8-30)
 
 * Upgrade g5-nodejs cookbook to pick up changes to npm prefix
