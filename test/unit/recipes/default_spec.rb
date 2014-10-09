@@ -48,4 +48,12 @@ describe 'g5stack::default' do
   it 'includes the phantomjs default recipe' do
     expect(chef_run).to include_recipe('phantomjs::default')
   end
+
+  it 'installs the redisio package' do
+    expect(chef_run).to include_recipe('redisio::default')
+  end
+
+  it 'installs the redisio::enable package' do
+    expect(chef_run).to include_recipe('redisio::enable')
+  end
 end
