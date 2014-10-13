@@ -91,10 +91,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.berkshelf.enabled = true
 
   config.vm.provision "chef_solo" do |chef|
+    chef.add_recipe "g5stack::default"
     chef.add_recipe "g5stack::gitconfig"
 
     # You may also specify custom JSON attributes:
     chef.json = {
+      postgresql: {
+        password: { postgres: 'password' }
+      },
       git: {
         user: {
           name: `git config --global user.name`.strip,
