@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'g5stack::gitconfig' do
-  let(:chef_run) { ChefSpec::Runner.new.converge(described_recipe) }
+  let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
 
   it 'creates a .gitconfig with the correct permissions' do
     expect(chef_run).to create_template('/home/vagrant/.gitconfig').with(
@@ -33,7 +33,7 @@ describe 'g5stack::gitconfig' do
 
   context 'with config overrides' do
     let(:chef_run) do
-      ChefSpec::Runner.new do |node|
+      ChefSpec::SoloRunner.new do |node|
         node.set['git']['user']['name'] = user_name
         node.set['git']['user']['email'] = user_email
         node.set['git']['color']['ui'] = color_ui
