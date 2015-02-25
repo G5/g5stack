@@ -11,7 +11,7 @@ provisioning a new G5 development environment.
 
 ## Requirements
 
-* [ChefDK](http://downloads.getchef.com/chef-dk)
+* [ChefDK](http://downloads.getchef.com/chef-dk) >= 0.4.0
 * [Vagrant](http://www.vagrantup.com) >= 1.6.5
 * [Virtualbox](https://www.virtualbox.org/) >= 4.0
 * [Ruby](http://www.ruby-lang.org) >= 1.9
@@ -192,25 +192,19 @@ If you find bugs, have feature requests or questions, please
   $ cd g5stack
   ```
 
-2. Install required gems using [Bundler](http://bundler.io):
+2. Install required cookbooks using [Berkshelf](http://berkshelf.com/):
 
   ```console
-  $ bundle install
+  $ chef exec berks install
   ```
 
-3. Install required cookbooks using [Berkshelf](http://berkshelf.com/):
+3. Provision an instance for development using [test-kitchen](http://kitchen.ci):
 
   ```console
-  $ bundle exec berks install
+  $ chef exec kitchen converge
   ```
 
-4. Provision an instance for development using [test-kitchen](http://kitchen.ci):
-
-  ```console
-  $ bundle exec kitchen converge
-  ```
-
-  See `bundle exec kitchen help` for more test-kitchen commands.
+  See `chef exec kitchen help` for more test-kitchen commands.
 
 ### Specs ###
 
@@ -219,13 +213,13 @@ and live in the `test/unit` directory. To execute the entire
 suite:
 
 ```console
-$ bundle exec rspec
+$ chef exec rspec
 ```
 
 To run the [foodcritic](http://acrmp.github.io/foodcritic) linting tool:
 
 ```console
-$ bundle exec foodcritic .
+$ chef exec foodcritic .
 ```
 
 The integration tests use [ServerSpec](http://serverspec.org), and live
@@ -233,15 +227,7 @@ in the `test/integration/default/serverspec` directory. To execute
 the test suite:
 
 ```console
-$ bundle exec kitchen verify
-```
-
-If you would prefer to automatically monitor the filesystem for changes
-to execute tests, [Guard](https://github.com/guard/guard) has been
-configured:
-
-```console
-$ bundle exec guard start
+$ chef exec kitchen verify
 ```
 
 ### Releasing ###
@@ -261,8 +247,8 @@ $ bundle exec guard start
 3. Build a clean image using test-kitchen:
 
   ```console
-  $ bundle exec kitchen destroy
-  $ bundle exec kitchen converge
+  $ chef exec kitchen destroy
+  $ chef exec kitchen converge
   ```
 
 4. Find the name of the VirtualBox instance you want to package

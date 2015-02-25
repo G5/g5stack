@@ -1,8 +1,14 @@
 require 'spec_helper'
 
 describe 'g5stack::default' do
+  before do
+    # Stub command that postgresql recipe uses to determine if postgresql
+    # is already installed
+    stub_command('ls /var/lib/postgresql/9.3/main/recovery.conf').and_return('')
+  end
+
   let(:chef_run) do
-    ChefSpec::Runner.new do |node|
+    ChefSpec::SoloRunner.new do |node|
       node.set['postgresql']['password']['postgres'] = ''
     end.converge(described_recipe)
   end
