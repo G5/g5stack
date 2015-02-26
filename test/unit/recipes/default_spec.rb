@@ -62,4 +62,8 @@ describe 'g5stack::default' do
   it 'installs the redisio::enable package' do
     expect(chef_run).to include_recipe('redisio::enable')
   end
+
+  it 'includes the imagemagick::devel recipe' do
+    expect(chef_run).to include_recipe('imagemagick::devel')
+  end
 end
