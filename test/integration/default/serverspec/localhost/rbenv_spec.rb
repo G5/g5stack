@@ -27,7 +27,7 @@ describe 'rbenv' do
   describe 'default ruby version' do
     subject(:ruby_version) { command("#{pre_command} ruby -v") }
 
-    its(:stdout) { is_expected.to match(/ruby 2\.1\.2/) }
+    its(:stdout) { is_expected.to match(/ruby 2\.2\.0/) }
   end
 
   describe 'bundler' do
