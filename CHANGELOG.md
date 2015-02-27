@@ -1,3 +1,10 @@
+## v0.2.0 (2015-02-26)
+
+* Use ChefDK consistently for cookbook development
+* Upgrade g5-rbenv to pick up changes for ruby 2.2.0
+* Add imagemagick to the base box
+* Upgrade g5-postgresql to pick up changes for postgresql-contrib
+
 ## v0.1.2 (2014-9-14)
 
 * Upgrade g5-nodejs cookbook to pick up changes for grunt-cli

@@ -7,7 +7,7 @@ provisioning a new G5 development environment.
 
 ## Current Version
 
-0.1.2
+0.2.0
 
 ## Requirements
 
