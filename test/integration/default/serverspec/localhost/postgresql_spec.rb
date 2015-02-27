@@ -31,4 +31,8 @@ describe 'PostgreSQL' do
 
     its(:stdout) { is_expected.to match(/vagrant/) }
   end
+
+  describe package('postgresql-contrib-9.3') do
+    it { is_expected.to be_installed }
+  end
 end
