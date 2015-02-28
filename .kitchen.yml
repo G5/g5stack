@@ -14,7 +14,7 @@ platforms:
   - name: ubuntu-12.04
 
 suites:
-  - name: default
+  - name: g5stack
     run_list:
       - recipe[g5stack::default]
       - recipe[g5stack::gitconfig]
