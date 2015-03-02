@@ -11,10 +11,10 @@ describe 'g5stack::gitconfig' do
     )
   end
 
-  context 'without default config' do
+  context 'with default config' do
     it 'passes in the default user config to gitconfig template' do
       expect(chef_run).to create_template('/home/vagrant/.gitconfig').with(
-        variables: hash_including(user_name: 'vagrant', user_email: '')
+        variables: hash_including(user_name: 'vagrant', user_email: 'vagrant')
       )
     end
 
