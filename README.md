@@ -246,13 +246,23 @@ $ chef exec kitchen verify
 
 3. Build a clean image using test-kitchen:
 
-  ```console
-  $ chef exec kitchen destroy
-  $ chef exec kitchen converge
-  ```
+   ```console
+   $ chef exec kitchen destroy
+   $ chef exec kitchen converge
+   ```
+
+4. Zero out the VM drive (this will make the final package much smaller):
+
+   ```console
+   $ chef exec kitchen login
+   $ sudo dd if=/dev/zero of=/EMPTY bs=1M
+   $ sudo rm -f /EMPTY
+   ```
+
+   You can safely ignore the error message "No space left on this device."
 
 4. Find the name of the VirtualBox instance you want to package
-   (e.g. "default-ubuntu-1204_default_1407517215070_93000"):
+   (e.g. ""g5stack-ubuntu-1204_default_1425092220656_52831"):
 
   ```console
   $ VBoxManage list vms
@@ -260,22 +270,27 @@ $ chef exec kitchen verify
   "g5-orion-vagrant_default_1398901466904_16526" {815ff90c-966d-473f-a75c-d8c3d5eb26b4}
   "g5-authentication-vagrant_default_1406238023773_17139" {76beb2f0-117f-4953-b348-db3eb92020d8}
   "packer-ubuntu-12.04-amd64_1406347781876_30580" {d92aac7b-37be-4a28-91a5-0782d5bef584}
-  "default-ubuntu-1204_default_1407517215070_93000" {aeec5515-67fa-4edf-9d15-d258a2d3d80d}
+  "g5stack-ubuntu-1204_default_1425092220656_52831" {438a50e6-ce60-4417-b7d2-3b671083470c}
   ```
 
 5. Use vagrant to package the base box:
 
   ```console
-  $ vagrant package --base default-ubuntu-1204_default_1407517215070_93000
+  $ vagrant package --base g5stack-ubuntu-1204_default_1425092220656_52831
   ```
 
-6. Upload the base box box to [Vagrantcloud](https://vagrantcloud.com/maeve/g5stack/versions)
-   by clicking the "Create New Version" button and following the instructions for
-   uploading a new version with a virtualbox provider.
+6. Upload package.box to [Amazon S3](https://console.aws.amazon.com/s3/home?region=us-west-2).
+   All of G5's base boxes live in the `g5-vagrant-boxes` bucket, with the
+   folder structure `<box_name>/<version>` (e.g. `g5stack/0.2.0`). When
+   uploading the file, make sure to set the file permissions to "make everything
+   public" in order to enable anonymous read-only access.
 
-For more information, see the 
-[Vagrant documentation](http://docs.vagrantup.com/v2/virtualbox/boxes.html) on
-creating a base box for a Virtualbox provider.
+7. Register a new version of the g5stack box in
+   [Hashicorp Atlas](https://atlas.hashicorp.com/getg5/boxes/g5stack)
+   (previously known as Vagrantcloud). Click "Create new version" and enter the
+   tag. Click "Create new provider" and enter "virtualbox" as the provider type
+   and the S3 URL to the file. To publicly release the box, click "Edit" next
+   to the version identifier and then click "Release version".
 
 ## License
 
