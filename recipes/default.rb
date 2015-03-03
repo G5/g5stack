@@ -14,3 +14,8 @@ end
 execute 'Set default editor' do
   command "update-alternatives --set editor #{node['editor']['default']}"
 end
+
+sudo 'vagrant' do
+  user 'vagrant'
+  nopasswd true
+end

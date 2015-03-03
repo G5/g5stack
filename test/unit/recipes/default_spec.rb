@@ -66,4 +66,8 @@ describe 'g5stack::default' do
   it 'includes the imagemagick::devel recipe' do
     expect(chef_run).to include_recipe('imagemagick::devel')
   end
+
+  it 'makes vagrant user a password-less sudoer' do
+    expect(chef_run).to install_sudo('vagrant').with(nopasswd: true)
+  end
 end
