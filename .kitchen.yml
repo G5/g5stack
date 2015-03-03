@@ -6,6 +6,9 @@ driver:
   forward_agent: true
   customize:
     memory: 2048
+  ssh:
+    insert_key: false
+  vagrantfile_erb: 'templates/Vagrantfile.erb'
 
 provisioner:
   name: chef_solo
@@ -14,7 +17,7 @@ platforms:
   - name: ubuntu-12.04
 
 suites:
-  - name: default
+  - name: g5stack
     run_list:
       - recipe[g5stack::default]
       - recipe[g5stack::gitconfig]
@@ -22,7 +25,3 @@ suites:
       postgresql:
         password:
           postgres: 'password'
-      git:
-        user:
-          name: <%= `git config user.name`.strip %>
-          email: <%= `git config user.email`.strip %>
