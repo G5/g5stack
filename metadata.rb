@@ -1,6 +1,6 @@
 name 'g5stack'
 description 'G5 standard base development environment'
-version '0.2.0'
+version '0.2.1'
 maintainer 'G5'
 license 'MIT'
 

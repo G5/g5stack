@@ -1,3 +1,11 @@
+## v0.2.1 (2015-03-03)
+
+* Move base box image to getg5/g5stack instead of maeve/g5stack
+* Use sudo cookbook to make vagrant user a password-less sudoer
+* Disable SSH keypair regeneration/insertion while managing base box
+* Rename test-kitchen instance to "g5stack" instead of "default"
+* More detailed documentation around the release process
+
 ## v0.2.0 (2015-02-26)
 
 * Use ChefDK consistently for cookbook development
@@ -26,4 +34,4 @@
 
 ## v0.0.1 (2014-3-3)
 
-* Initial release
+* Initial releasegv
