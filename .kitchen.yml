@@ -8,6 +8,7 @@ driver:
     memory: 2048
   ssh:
     insert_key: false
+  vagrantfile_erb: 'templates/Vagrantfile.erb'
 
 provisioner:
   name: chef_solo
