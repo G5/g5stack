@@ -6,6 +6,8 @@ driver:
   forward_agent: true
   customize:
     memory: 2048
+  ssh:
+    insert_key: false
 
 provisioner:
   name: chef_solo
