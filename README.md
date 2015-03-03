@@ -277,7 +277,9 @@ $ chef exec kitchen verify
 5. Use vagrant to package the base box:
 
   ```console
-  $ vagrant package --base g5stack-ubuntu-1204_default_1425092220656_52831
+  $ cd .kitchen/kitchen-vagrant/g5stack-ubuntu-1204
+  $ vagrant package --output ../../../package.box --base g5stack-ubuntu-1204_default_1425092220656_52831
+  $ cd ../../..
   ```
 
 6. Upload package.box to [Amazon S3](https://console.aws.amazon.com/s3/home?region=us-west-2).
