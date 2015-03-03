@@ -263,7 +263,7 @@ $ chef exec kitchen verify
    You can safely ignore the error message "No space left on this device."
 
 4. Find the name of the VirtualBox instance you want to package
-   (e.g. ""g5stack-ubuntu-1204_default_1425092220656_52831"):
+   (e.g. "g5stack-ubuntu-1204_default_1425092220656_52831"):
 
   ```console
   $ VBoxManage list vms
