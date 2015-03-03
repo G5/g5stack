@@ -76,21 +76,22 @@ with the `vagrant init` command:
 ```console
 $ mkdir my-new-project
 $ cd my-new-project
-$ vagrant init maeve/g5stack
+$ vagrant init getg5/g5stack
 ```
 
 Alternatively, you can add the following line to your existing `Vagrantfile`:
 
 ```ruby
 Vagrant.configure('2') do |config|
-  config.vm.box = 'maeve/g5stack'
+  config.vm.box = 'getg5/g5stack'
   # ...
 end
 ```
 
-This base box is Virtualbox image hosted on
-[Vagrantcloud](https://vagrantcloud.com). There is no need to explicitly set
-the `box_url` as long as your version of Vagrant is at least 1.5.
+This base box is a Virtualbox image available via
+[Hashicorp Atlas](https://atlas.hashicorp.com/getg5/boxes/g5stack)
+(previously known as Vagrantcloud). There is no need to explicitly set
+the `box_url`.
 
 ### Git config
 
